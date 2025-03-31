@@ -1,5 +1,13 @@
+
+
+
+![bloggr logo](bloggr_logo.jpg)
+
+
+
+
 # bloggr
-`bloggr` is a simple blog oriented Go application that converts `.md` files and
+`bloggr` is a simple blog oriented Go application that converts markdown files and
 associated images and parses it into an HTML pages.
 
 `bloggr` is designed to work with git as a source management tool and with
