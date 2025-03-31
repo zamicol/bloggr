@@ -1,7 +1,7 @@
 
 
 
-![bloggr logo](bloggr_logo.jpg)
+![bloggr logo](bloggr_logo.png)
 
 
 
