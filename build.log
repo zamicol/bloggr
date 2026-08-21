@@ -1,0 +1,8 @@
+bloggr: 2025/04/01 16:28:31 Starting bloggr
+bloggr: 2025/04/01 16:28:31 Creating default config.json
+bloggr: 2025/04/01 16:28:31 Creating default article_header.html
+bloggr: 2025/04/01 16:28:31 Creating default article_footer.html
+bloggr: 2025/04/01 16:28:31 Creating default .gitignore
+bloggr: 2025/04/01 16:28:31 bloggr completed successfully
+bloggr: 2025/04/02 15:24:30 Starting bloggr
+bloggr: 2025/04/02 15:24:30 Failed to generate main page:invalid home page ([output directory]/index.html format

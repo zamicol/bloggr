@@ -1,0 +1,20 @@
+{
+        "Path": "test",
+        "Input": "0_to_publish",
+        "Output": "0_published",
+        "Digest": "SHA-256",
+        "MaxLogSize": 10485760,
+        "DateFormat": "YYYY/MM/DD",
+        "DefaultAuthor": "Anonymous",
+        "MoveProcessed": true,
+        "InsertDate": true,
+        "InsertAuthor": true,
+        "TitleDelimiter": "_",
+        "ArticleListShowDate": true,
+        "ArticleListShowTags": true,
+        "ArticleListShowAuthor": true,
+        "HashImages": true,
+        "HashArticle": true,
+        "SignArticle": true,
+        "DeleteAndRebuild": false
+    }
