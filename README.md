@@ -23,8 +23,7 @@ on the site.  Hashing and signing prevents such abuses.)
    that may be associated with an article.
  - For each article, there is a `.md` file.  If a subdirectory does not contain
    a `.md` file, it is ignored.  If a subdirectory contains multiple `.md`
-   files, it is ignored.  
-
+   files, it is ignored.
 
 ## Header Mode 
 For a `.md` file, the first line which starts with a markdown header, `#`
@@ -149,28 +148,34 @@ Directories are denoted by square brackets `[]`.
       index.md
     [20180921_Gravity_Wells_are_Sombreros]
       index.md
-      image1.png
-      image2.png
+      image1_[content_hash].png
+      image2_[content_hash].png
     [20250113_Why_Information_Theory_is_Awesome]
       index.md
-      image1.png
-      image2.png
+      image1_[content_hash].png
+      image2_[content_hash].png
   [0_html]
     index.html  (HTML blog main page, includes article list)
     [20250114_Introduction_to_Coze]
-      .index.html
+      index.html
+      [history]
+        20250114_[content_hash].md
     [20250113_Why_Information_Theory_is_Awesome]
       index.html
-      image1_SHA256_CU5nKqKeNXFPYddfIGoD3ZMFknpIzqlpZr7eXLdCNL8.png
-      image2_SHA256_IO_az6B4WwW53t_CjIvQ7zM2Xk-hO_bfT0DbUz57LhA.png
+      image1_SHA256:CU5nKqKeNXFPYddfIGoD3ZMFknpIzqlpZr7eXLdCNL8.png
+      image2_SHA256:IO_az6B4WwW53t_CjIvQ7zM2Xk-hO_bfT0DbUz57LhA.png
+      [history]
+        20250114_[content_hash].md
     [20180921_Gravity Wells are Sombreros]
       index.html
-      image1_SHA256_CU5nKqKeNXFPYddfIGoD3ZMFknpIzqlpZr7eXLdCNL8.png
-      image2_SHA256_IO_az6B4WwW53t_CjIvQ7zM2Xk-hO_bfT0DbUz57LhA.png
+      image1_SHA256:CU5nKqKeNXFPYddfIGoD3ZMFknpIzqlpZr7eXLdCNL8.png
+      image2_SHA256:IO_az6B4WwW53t_CjIvQ7zM2Xk-hO_bfT0DbUz57LhA.png
+      [history]
+        20180921__[content_hash].md
 ```
 
 
-On running bloggr, if the following files or directories don't exist, they are created.  
+On run, if the following files or directories don't exist, they are created.  
 
 ``` 
 config.json
@@ -179,14 +184,15 @@ article_header.html
 article_footer.html
 coze_key.json
 .gitignore
-0_processed
-0_processed/index.md
+0_markdown
+0_markdown/index.md
 0_html
 0_html/index.html
 ```
 
 ## Blog Main Page
-`0_html/index.html` is the blog main page.  There is currently no pagination.
+`0_html/index.html` is the blog main page and is derived from
+`0_markdown/index.md`.  There is currently no pagination.
 
 ### Example Blog Main Page
 
@@ -249,8 +255,8 @@ An example `index.html` file:
     <p>My writings about tech, politics, information theory/cryptography, and life.</p>
     <!-- Start Article List -->
     <p><a href="[20250114_Introduction_to_Coze]/index.html">[2025/01/14] Introduction to Coze</a></p>
-    <p><a href="[20250113_Why_Information_Theory_is_Awesome]/index.html">[2025/01/13] Why Information Theory is Awesome</a> (Author: Zamicol, Tags: Cryptography)</p>
-    <p><a href="[20241030_Gravity_Wells_are_Sombreros]/index.html">[2024/10/30] Gravity Wells are Sombreros</a> (Author: Zamicol, Tags: Gravity, Relativity, Time Dilation)</p>
+    <p><a href="[20250113_Why_Information_Theory_is_Awesome]/index.html">[2025/01/13] Why Information Theory is Awesome</a> (Tags: Cryptography)</p>
+    <p><a href="[20241030_Gravity_Wells_are_Sombreros]/index.html">[2024/10/30] Gravity Wells are Sombreros</a> (Tags: Gravity, Relativity, Time Dilation)</p>
     <!-- End Article List -->
 		<p> All rights reserved Zamicol</p>
 </body>
@@ -289,33 +295,77 @@ Example Footer:
 </html>
 ```
 
-## Reprocessing
-To reprocess an article, delete the associated `0_html` subdirectory.
 
-For example, delete `0_html/20250114_Introduction_to_Coze/index.html` run bloggr, which will catch `0_markdown/20250114_Introduction_to_Coze/index.md`
-
-## History
-A copy of all original markdown documents are kept in `0_markdown/[article_title/history/digest`
-
-This allows editing and visible changes.
 
 ## Editing
-Editing with history is supported. Simply edit the file. `0_markdown/20250114_Introduction_to_Coze/index.md` and rerun bloggr.  
+Bloggr supports editing with history. To edit, simply edit the source markdown
+file. Bloggr uses file system time stamping (modification time) for efficient
+processing.
+
+For example, edit `0_markdown/20250114_Introduction_to_Coze/index.md` and rerun
+bloggr.
+
+```psuedo code
+if current.mtime != stored.mtime || current.size != stored.size {
+    // treat as changed → re-hash / re-process
+} else {
+    // treat as unchanged → skip
+}
+```
+
+Although not suggested, reprocessing is also possible. Delete the associated
+`0_html/[article]` subdirectory and re-run `bloggr`. For example, delete
+`0_html/20250114_Introduction_to_Coze/index.html` and run bloggr, which will
+re-process `0_markdown/20250114_Introduction_to_Coze/index.md`.
 
 
+## History and Content Index
+A copy of all original assets (documents and images) are kept in
+`content/[digest]`.
 
-### Content Index
 For versioning and tracking articles, bloggr uses a content index.
 
 `content_index.txt`
 
-SHA256_CU5nKqKeNXFPYddfIGoD3ZMFknpIzqlpZr7eXLdCNL8 image1_SHA256_CU5nKqKeNXFPYddfIGoD3ZMFknpIzqlpZr7eXLdCNL8.png
+```
+
+CU5nKqKeNXFPYddfIGoD3ZMFknpIzqlpZr7eXLdCNL8:SHA256 image1.png
+rkkzQfAX69cERx-APub0cH1BmTX4mMqxFt704EgbL_o:SHA256 gravity.md
+
+```
+
+History allows editing and visible changes while keeping the original. The history index, `history.txt`:
+```
+
+Last_global_edit: 1787426188
+20180921 Gravity Wells are Sombreros
+  SHA-256:rkkzQfAX69cERx-APub0cH1BmTX4mMqxFt704EgbL_o
+    image1_SHA256:CU5nKqKeNXFPYddfIGoD3ZMFknpIzqlpZr7eXLdCNL8.png
+    image2_SHA256:IO_az6B4WwW53t_CjIvQ7zM2Xk-hO_bfT0DbUz57LhA.png
+```
+
+The processed html files themselves are also stored in history since future
+markdown to html conversions are not guaranteed to be eternally deterministic.
+Only the source files (markdown and other assets)
+
+In the future, if a directory or index becomes too large it is sharded based on
+the b64 digest for the content index or date in the case of the history index.
+The first b64 letter provides 64 shards (6 bits). However sharding is a pain for
+static links, see the appendix.
+
+# Digest Convention
+Normal digest names follow the [Coz naming convention](https://github.com/Cyphrme/Coz#external-digest-serialization)
+
+However, for the history directory, digests are store in reverse digest naming,
+where the value comes first. This allows a shared name space for all digests.
+
+CU5nKqKeNXFPYddfIGoD3ZMFknpIzqlpZr7eXLdCNL8:SHA256
 
 ## Use with External other Web servers or Git Hosting
 You may use the output `0_html` in projects via a symlink. For example,
 if your website is `Example.com`, you may symlink the `a` directory to the
 website root, so articles appears as
-`Example.com/20250114_Introduction_to_Coze`
+`Example.com/20250114_Introduction_to_Coz`
 
 You may also use git directly: https://gist.github.com/zamicol/f160d05dd22c9eb25031
 
@@ -344,10 +394,10 @@ Cryptographic features are optional, but are provided for high security
 guarantees.
 
 ### Image Hashing
-Before parsing the markdown into HTML, use SHA-256 to hash images.  After the
-image name, an underscore, digest name, another underscore, and the URL safe, no
-padding, base 64 (b64ut) value of the hash is inserted before the file
-extension.  These values are append to or updated if already present.
+Before parsing the markdown into HTML, assets are hashed and "digest stamped".
+After the base file name is an underscore, digest name, colon, and the URL safe,
+no padding (truncated), base 64 (b64ut) value of the hash is inserted before the
+file extension.  These values are append to or updated if already present.
 
 For example
 
@@ -355,10 +405,10 @@ For example
 
 Changes to
 
-    image1_SHA256_CU5nKqKeNXFPYddfIGoD3ZMFknpIzqlpZr7eXLdCNL8.png
+    image1_SHA256:CU5nKqKeNXFPYddfIGoD3ZMFknpIzqlpZr7eXLdCNL8.png
 
 In the article `.md` file, the names of the images are updated with this new
-name.  
+name.
 
 ### Article Hashing
 Once the image file names are replaced with names that include a digest, a
@@ -373,7 +423,7 @@ This article's markdown file is integrity protected:
 ```
 
 ### Article Signing
-Articles may also be signed using Coze.  
+Articles may also be signed using [Coz]().
 
 For example, the article with the digest `ZMXz8zGrcC89-Tt2dAF_YUvQC0gmxN-nhIgK9MwtDrc` may be signed like this:
 
@@ -418,10 +468,6 @@ This article's markdown file is signed by the author using Coze:
 The key `coze_key.json` is used to sign.  If a key is not provided, a new one is generated.  
 
 
-
-
-
-
 ## Config Options
 Config is expected to be located in the directory that the command is executed
 as `config.json`.
@@ -453,6 +499,14 @@ SignArticle               - Boolean - Sign the article using Coze, generate key 
 DeleteAndRebuild          - Boolean - Delete all files/directories in `0_html` and rebuild all articles in `/0_markdown`.  Default: false
 ```
 
+## Variables
+List of variables available for the templates:
+ARTICLE_TITLE
+ARTICLE_DATE
+ARTICLE_AUTHOR
+
+
+
 ## Logging
 
 Logging is provided to denote run settings and ignored files/directories (e.g.,
@@ -482,3 +536,29 @@ of `git`.
 
 ### Can I not date my articles?
 NO. And shame on you! You should always date online writings.
+
+## See Also
+See https://github.com/Cyphrme/Path for file path naming, specifically "file base".
+
+## Exposition
+### /dev/null and /dev/ext
+
+/dev/null for nothing.  It is a black hole.  In the same way there should be a
+white hole, /dev/ext, "ext" being short for "extant". What would be in this dir?
+All content addressable files on the system.
+
+Using a symbolic link, this file then can be used as a database:
+
+For example:
+ln -s target /dev/ext /var/www/website_name/content
+
+Then URLs may look like:
+
+List of infinite sources or sinks of specific kinds of data:
+/dev/null
+/dev/full
+/dev/zero
+/dev/random
+
+
+
