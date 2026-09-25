@@ -34,7 +34,7 @@ So then, what do gravity wells look like near and in massive bodies? To
 illustrate, let's envision an empty volume of space with a one light year radius
 and a single celestial body, for example Earth, in the center.
 
-![Thought experiment: gravity in and near a massive body](image.png)
+![Thought experiment: gravity in and near a massive body](miniverse.png)
 
 In this thought experiment where is the least and most gravity?
 

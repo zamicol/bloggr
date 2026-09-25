@@ -17,32 +17,32 @@ example, spez, [Reddit's CEO, edited people's
 comments](https://www.theverge.com/2016/11/23/13739026/reddit-ceo-steve-huffman-edit-comments)
 on the site.  Hashing and signing prevents such abuses.)
 
-## Blog Files and Articles
+## Directories, Blog Files, and Articles
  - An article may be a single file or contained in a subdirectories of the input
    directory. Subdirectories are helpful in organizing files, such as images,
-   that may be associated with an article.
- - For each article, there is a `.md` file.  If a subdirectory does not contain
-   a `.md` file, it is ignored.  If a subdirectory contains multiple `.md`
-   files, it is ignored.
+   that may be associated with an article.  Any file in an article subdirectory
+   is also copied to the output, even if it is not referenced.
+ - For each article, there is a `.md` file.
 
-## Header Mode 
+## Metadata Mode - Header and Footer
+There are two metadata modes: header mode and footer mode.
 For a `.md` file, the first line which starts with a markdown header, `#`
-through `######`, is the title of the article and enters "header mode".  The
-first empty, non-title line exits "header mode".
+through `######`, is the title of the article and enters "header mode".  
 
 An input article must include a header line.  If a header line is not found, the
-file is ignored by the article pipeline.
+file is ignored and the article pipeline ignore the file/article directory.
 
 After the title, subheadings and metadata such as date, author, and tags may be
 denoted in any `#` to `######` line.  The levels have no meaning (the levels
 allow the selection of a desired HTML title size.), but we suggest using the
 single `#` for title and `##` for subtitle.
 
-## Footer Mode
-The footer mode starts with a `---` line followed by a header line (`#`).
+The footer mode starts with a `---` line followed by a header line.
 
-### Header/Footer Mode Labels
-Inside of header mode, bloggr provides some pre-defined labels.  Authors may
+The first empty, non-header line exits any metadata mode.
+
+**Metadata Mode Labels**
+Inside of metadata mode, bloggr provides some pre-defined labels.  Authors may
 define their own as desired. If a date or author isn't given, the current date
 and default from config is used and field appearance is configurable in config.
  - `Date: ` 
@@ -56,8 +56,7 @@ comma.
 ```md
 # Title
 ## Subtitle
-### Date: 2025/1/1
-#### Author: Zamicol
+### Date: 20250101, Author: Zamicol
 ##### 2nd Subtitle
 ###### 3rd Subtitle
 ### Tags: Example Tag 1, Example Tag 2
@@ -80,22 +79,30 @@ Or maybe you've seen one with Earth like this image:
 ```
 
 ## Processing Pipeline
+
+Key 
+- Processes articles in place.
+- Directories are specified by `config.json` in the current working directory.
+
 ### Directory Structure
-`bloggr` on run looks for `config.json` in the current working directory and
+`bloggr` on run looks for <current working directory>/`config.json`  and
 processes the `blog` directory in accordance to the config.  Inside, the input
 directory `0_markdown` is a staging area for articles before bloggr runs. The
 input directory may contain stand alone `.md` files, representing stand alone
 articles, or a sub-directory where each directory represents a single input
 article. Other than the specified hierarchy, bloggr assumes a flat directory
-structure and does not search for articles recursively. If a subdirectory does
-not contain a `.md` file, or contains multiple `.md` files, it is ignored.
+structure and does not search for articles recursively. Articles are only
+searched for at depth 1.
+
+If a subdirectory does not contain a `.md` file, or contains multiple `.md`
+files, it is ignored. (TODO: this seems like the wrong idea for multiple).
 
 ### HTML File Articles
 Newly generated `index.html` files are created under a "article" directories,
 `0_html` inside of a directory named using the article title. The
 directory is named in title snake case with the prepended date. For example,
-`0_html/20250114_Introduction_to_Coze/index.html` is generated for the
-article `IntroductionToCoze.md`.
+`0_html/20250114_Introduction_to_Coz/index.html` is generated for the
+article `IntroductionToCoz.md`.
 
 All other article files linked to from the article, such as images, are also
 copied into an individual directory.
@@ -103,8 +110,8 @@ copied into an individual directory.
 ### Processed Files
 After processing, source markdown files and related article files are moved to
 `0_processed` as a directory,`0_processed/[article title]/index.md`, using title
-snake case. For example, the title `#Introduction_to_Coze` results in a file
-`0_processed/20250114_Introduction_to_Coze/index.md`.
+snake case. For example, the title `#Introduction_to_Coz` results in a file
+`0_processed/20250114_Introduction_to_Coz/index.md`.
 
 ### Example Directory Structure
 When processing the blog directory, if `bloggr` files do not exist
@@ -118,7 +125,7 @@ Directories are denoted by square brackets `[]`.
 	config.json
 	random_file (ignored)
 	incomplete_blog.md (ignored)
-	coze_key.json
+	coz_key.json
 	[0_markdown]
 		[Gravity Wells are Sombreros] (No date given and incorrect input format)
 			GravityWells.md (file name/title mismatch)
@@ -128,7 +135,7 @@ Directories are denoted by square brackets `[]`.
 			informationTheory.md (file name/title mismatch)
 			image1.png
 			image.png
-		IntroductionToCoze.md (Title mismatch)
+		IntroductionToCoz.md (Title mismatch)
 ```
 
 ##### After Processing
@@ -140,11 +147,11 @@ Directories are denoted by square brackets `[]`.
   incomplete_blog.md (ignored)
   article_header.html
   article_footer.html
-  coze_key.json
+  coz_key.json
   .gitignore
   [0_markdown]
     0_index.md    (Blog article list in markdown)
-    [20250114_Introduction_to_Coze]
+    [20250114_Introduction_to_Coz]
       index.md
     [20180921_Gravity_Wells_are_Sombreros]
       index.md
@@ -156,7 +163,7 @@ Directories are denoted by square brackets `[]`.
       image2_[content_hash].png
   [0_html]
     index.html  (HTML blog main page, includes article list)
-    [20250114_Introduction_to_Coze]
+    [20250114_Introduction_to_Coz]
       index.html
       [history]
         20250114_[content_hash].md
@@ -166,7 +173,7 @@ Directories are denoted by square brackets `[]`.
       image2_SHA256:IO_az6B4WwW53t_CjIvQ7zM2Xk-hO_bfT0DbUz57LhA.png
       [history]
         20250114_[content_hash].md
-    [20180921_Gravity Wells are Sombreros]
+    [20180921_Gravity_Wells_are_Sombreros]
       index.html
       image1_SHA256:CU5nKqKeNXFPYddfIGoD3ZMFknpIzqlpZr7eXLdCNL8.png
       image2_SHA256:IO_az6B4WwW53t_CjIvQ7zM2Xk-hO_bfT0DbUz57LhA.png
@@ -182,7 +189,7 @@ config.json
 build.log
 article_header.html
 article_footer.html
-coze_key.json
+coz_key.json
 .gitignore
 0_markdown
 0_markdown/index.md
@@ -200,7 +207,7 @@ coze_key.json
 Zamicol's Blog
 My writings about tech, politics, information theory/cryptography, and life.
 
-[2025/01/14] Introduction to Coze
+[2025/01/14] Introduction to Coz
 [2025/01/13] Why Information Theory is Awesome (Tags: Cryptography)  
 [2024/10/30] Gravity Wells are Sombreros (Tags: Gravity, Relativity, Time Dilation)
               
@@ -226,7 +233,7 @@ the title,
 
 
 ```
-[2025/01/13] Why Information Theory is Awesome (Tags: Cryptography)  
+[2025/01/13] Why Information Theory is Awesome (Tags: Cryptography)
 ```
 
 Once `0_processed/index.md` is generated, it's html contents are inserted into
@@ -254,7 +261,7 @@ An example `index.html` file:
     <h1>Zamicol's Blog</h1>
     <p>My writings about tech, politics, information theory/cryptography, and life.</p>
     <!-- Start Article List -->
-    <p><a href="[20250114_Introduction_to_Coze]/index.html">[2025/01/14] Introduction to Coze</a></p>
+    <p><a href="[20250114_Introduction_to_Coz]/index.html">[2025/01/14] Introduction to Coz</a></p>
     <p><a href="[20250113_Why_Information_Theory_is_Awesome]/index.html">[2025/01/13] Why Information Theory is Awesome</a> (Tags: Cryptography)</p>
     <p><a href="[20241030_Gravity_Wells_are_Sombreros]/index.html">[2024/10/30] Gravity Wells are Sombreros</a> (Tags: Gravity, Relativity, Time Dilation)</p>
     <!-- End Article List -->
@@ -302,7 +309,7 @@ Bloggr supports editing with history. To edit, simply edit the source markdown
 file. Bloggr uses file system time stamping (modification time) for efficient
 processing.
 
-For example, edit `0_markdown/20250114_Introduction_to_Coze/index.md` and rerun
+For example, edit `0_markdown/20250114_Introduction_to_Coz/index.md` and rerun
 bloggr.
 
 ```psuedo code
@@ -315,8 +322,8 @@ if current.mtime != stored.mtime || current.size != stored.size {
 
 Although not suggested, reprocessing is also possible. Delete the associated
 `0_html/[article]` subdirectory and re-run `bloggr`. For example, delete
-`0_html/20250114_Introduction_to_Coze/index.html` and run bloggr, which will
-re-process `0_markdown/20250114_Introduction_to_Coze/index.md`.
+`0_html/20250114_Introduction_to_Coz/index.html` and run bloggr, which will
+re-process `0_markdown/20250114_Introduction_to_Coz/index.md`.
 
 
 ## History and Content Index
@@ -440,7 +447,7 @@ For example, the article with the digest `ZMXz8zGrcC89-Tt2dAF_YUvQC0gmxN-nhIgK9M
 }
 ```
 
-`.gitignore` is populated with `coze_key.json` to prevent pushing to remote git repositories.  
+`.gitignore` is populated with `coz_key.json` to prevent pushing to remote git repositories.  
 
 It is then used to update the Article Crypto section.
 
@@ -449,7 +456,7 @@ It is then used to update the Article Crypto section.
 This article's markdown file and images are integrity protected:
   SHA256:ZMXz8zGrcC89-Tt2dAF_YUvQC0gmxN-nhIgK9MwtDrc
 
-This article's markdown file is signed by the author using Coze:
+This article's markdown file is signed by the author using Coz:
 ```
 {
   "pay": {
@@ -465,7 +472,7 @@ This article's markdown file is signed by the author using Coze:
 <!-- End Article Crypto -->
 ```
 
-The key `coze_key.json` is used to sign.  If a key is not provided, a new one is generated.  
+The key `coz_key.json` is used to sign.  If a key is not provided, a new one is generated.  
 
 
 ## Config Options
@@ -495,7 +502,7 @@ ArticleListShowTags       - Boolean - Show tags on the main blog page under the 
 ArticleListShowAuthor     - Boolean - Show the author on the main blog page after the respective article title. Default: False
 HashImages                - Boolean - Hash images and replace image names with a reference to the hash.   Default: true
 HashArticle               - Boolean - Hash the contents of the `.md` article and append/update article digest section.  Default: true
-SignArticle               - Boolean - Sign the article using Coze, generate key as file `coze_key.json` if it doesn't exist.  Default: true
+SignArticle               - Boolean - Sign the article using Coz, generate key as file `coz_key.json` if it doesn't exist.  Default: true
 DeleteAndRebuild          - Boolean - Delete all files/directories in `0_html` and rebuild all articles in `/0_markdown`.  Default: false
 ```
 
@@ -518,7 +525,7 @@ printed to the command line and appended to `build.log`. `build.log` is kept to
 ## Article Styles
 The following can be managed with CSS styles. 
 
-Here's some things that the authors have done in the default style.css
+Here's some things that the authors have done in the default `style.css`
 - Images are centered.
 - There is an option for single images per line, and multiple images per line.
 - On the main blog page, metadata like the author and tags is in smaller text.
@@ -532,33 +539,15 @@ existing directory is deleted and is replaced with the new article.
 ### Why hash files independent of `git`?
 Much of `git` is still using SHA1, many `git` environments are not designed for
 integrity protection.  Also, this allows copying and distribution independently
-of `git`.
+of `git`.  (We could use git object store directly, that is to interface with
+git on a very low level, but we don't have time to do that now.)
 
 ### Can I not date my articles?
-NO. And shame on you! You should always date online writings.
+NO. And shame on you! You should always date online writings. This drives me
+bonkers.
 
 ## See Also
 See https://github.com/Cyphrme/Path for file path naming, specifically "file base".
-
-## Exposition
-### /dev/null and /dev/ext
-
-/dev/null for nothing.  It is a black hole.  In the same way there should be a
-white hole, /dev/ext, "ext" being short for "extant". What would be in this dir?
-All content addressable files on the system.
-
-Using a symbolic link, this file then can be used as a database:
-
-For example:
-ln -s target /dev/ext /var/www/website_name/content
-
-Then URLs may look like:
-
-List of infinite sources or sinks of specific kinds of data:
-/dev/null
-/dev/full
-/dev/zero
-/dev/random
 
 
 
