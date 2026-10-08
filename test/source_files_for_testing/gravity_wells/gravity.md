@@ -2,16 +2,13 @@
 ###### Date: 20180921, Author: Zamicol, Tags: Gravity, Special Relativity, Time Dilation
 ###### Original post published Friday, September 21, 2018.  Modified 20260925
 
+You've certainly seen an illustration of a gravity well, something like this:
 
-You've certainly seen an illustration of a gravity well, something like
-[this](1):
-
-![Gravity potential dip](gravity_dip.png)
-
+![gravity dip](gravity_dip.png)
 
 Or maybe you've [seen one with Earth][1]:
 
-![Gravity potential dip](gravity_potential_dip.png)
+![gravity dip with Earth](gravity_potential_dip.png)
 
 Whenever I saw gravity well depictions in school I mistakenly assumed they
 depicted gravity. They don't. These gravity wells depict [gravitational
