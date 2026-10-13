@@ -148,9 +148,11 @@ The first empty, non-header line exits any metadata mode.
 Inside of metadata mode, bloggr provides some pre-defined labels.  Authors may
 define their own as desired. If a date or author isn't given, the current date
 and default from config is used and field appearance is configurable in config.
+Author and tag are variadic and accept multiple values.
+
  - `Date: ` 
  - `Author: `
- - `Tags: `
+ - `Tag: `
 
 Multiple labels may appear on the same line. Date format may be YYYY/MM/DD,
 YYYYMMDD, or a Unix timestamp. Tags may be multi-word and are delimited by a
@@ -161,13 +163,13 @@ comma.
 ## Subtitle
 #### 2nd Subtitle
 #### Date: 20250101, Author: Zamicol
-#### Tags: Example Tag 1, Example Tag 2
+#### Tag: Example Tag 1, Example Tag 2
 ```
 
 ## Example Blog
 ```md
 # Gravity Wells are Sombreros
-###### Date: 20180921, Author: Zamicol, Tags: Gravity, Special Relativity, Time Dilation
+###### Date: 20180921, Author: Zamicol, Tag: Gravity, Special Relativity, Time Dilation
 ###### Original post published Friday, September 21, 2018.  Modified 20260925
 
 You've certainly seen an illustration of a gravity well, something like this:
@@ -190,8 +192,8 @@ the title,
  if the following exist: 
  dash (-) followed by the subtitle
  Open parentheses:
-  - author (optional)
-  - tags   (optional)
+  - author (variadic, optional)
+  - tag   (variadic, optional)
  End parentheses
 
 Once `markdown/index.md` is generated, it's html contents are inserted into
@@ -416,7 +418,7 @@ printed to the command line and appended to `build.log`. `build.log` is kept to
 ## Variables
 List of variables available for the templates:
 
-URI_BASE_PATH         - The base path for the `public` directory.  Example, `/articles`
+URI_BASE_PATH         - The URI base path for the `public` directory.  Example, `/articles`, which would point to `https://example.com/articles`
 ARTICLE_TITLE         - The human readable title.  Example, `Introduction to Coz`
 ARTICLE_AUTHOR        - Article author
 ARTICLE_DATE          - The human date.  Example, `2026/09/21`
@@ -450,7 +452,7 @@ StyleCSS       - Boolean - Use `style.css`, creates if it doesn't exist.   Defau
 History        - Boolean - History for the article.  Default: true
 HashImages     - Boolean - Hash images and replace image names with a reference to the hash.   Default: true
 HashArticle    - Boolean - Hash the contents of the `.md` article and append/update article digest section.  Default: true
-SignArticle    - Boolean - Sign the article using Coz, generate key as file `coz_key.json` if it doesn't exist.  Default: true
+SignArticle    - Boolean - Sign the article using Coz, generate ES256 key as file `coz_key.json` if it doesn't exist.  Default: true
 
 ArticleListShowDate     - Boolean - Show the date on the main blog page under before the article title. Default: true
 ArticleListShowTags     - Boolean - Show tags on the main blog page under the respective article title and author. Default: true
