@@ -1,0 +1,16 @@
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* One image in a paragraph is centered on its own line.
+   Several images in the same paragraph stay on one line. */
+p > img:only-child {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.article-meta {
+    font-size: smaller;
+}
